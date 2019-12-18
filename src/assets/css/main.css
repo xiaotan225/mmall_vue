@@ -1,0 +1,56 @@
+/************
+ * 页面重置
+ ************/
+
+body {
+    background-color: #f6f6f6;
+    min-width: 1080px;
+    font: 12px/1.5 tahoma, arial, Hiragino Sans GB, \\5B8B\4F53, sans-serif;
+}
+
+a {
+    color: #888;
+    text-decoration: none;
+}
+i{
+    font-style:normal
+}
+
+ul,li{
+    padding: 0;
+    margin: 0;
+}
+li{
+    list-style: none;
+}
+em{font-style:normal}
+input{
+    border: none;
+    outline: none;
+    border:1px solid #ccc; 
+}
+ol{
+    padding: 0;
+    margin: 0;
+}
+
+/************
+ * 工具样式
+ ************/
+
+.color-red {
+    color: #c60023;
+}
+
+.color-888 {
+    color: #888;
+}
+.w{
+    width: 1080px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+.rt{
+    text-align: center !important;
+}
