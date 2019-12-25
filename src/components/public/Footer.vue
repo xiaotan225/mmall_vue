@@ -3,14 +3,14 @@
     <footer class="footer w">
         <div class="top">
             <ul>
-                <li><a href="#">项目实战&nbsp;&nbsp;|&nbsp;&nbsp;</a></li>
-                <li><a href="#">xiaotan主页&nbsp;&nbsp;|&nbsp;&nbsp;</a></li>
+                <li><a href="https://github.com">github&nbsp;&nbsp;|&nbsp;&nbsp;</a></li>
+                <li><a href="https://github.com/xiaotan225">我的github&nbsp;&nbsp;|&nbsp;&nbsp;</a></li>
                 <li><a href="#">tanxiao主页&nbsp;&nbsp;|&nbsp;&nbsp;</a></li>
                 <li><a href="#">xxx主页</a></li>
             </ul>
         </div>
         <div class="bottom">
-            <p class="color-888">Copyright © 2018 happymmall.com All Rights Reserved</p>
+            <p class="color-888">Copyright © 2019 All Rights Reserved</p>
         </div>
     </footer>
   </div>

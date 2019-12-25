@@ -9,14 +9,14 @@ module.exports = {
     host: '0.0.0.0',   // 设置主机的地址
     port: '8082',           //端口
     //配置跨域
-    // proxy:{
-    //   '':{
-    //     target:'http://127.0.0.1:3000/',
-    //     changeOrigin:true
-    //   },
+    proxy:{
+      '':{
+        target:'http://127.0.0.1:3001',
+        changeOrigin:true
+      },
     
-     
-    // }
+    
+    }
   },
 
   

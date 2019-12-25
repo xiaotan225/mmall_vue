@@ -2,6 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Axios from 'axios'
+// Axios.defaults.baseURL="http://127.0.0.1:3001"; 
+Vue.prototype.$axios = Axios;
 
 /* 轮播图插件 */
 import VueAwesomeSwiper from 'vue-awesome-swiper' 

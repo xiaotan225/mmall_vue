@@ -1,12 +1,14 @@
-<template>
+<template v-slot:item="slotProps">
   <div>
     <CrumbList title="我的购物车"></CrumbList>
+      
+      <template >
+     <List>
 
-      <List>
-            <input type="checkbox" id="all" slot="checkboxAll"/>
-              <input type="checkbox" id="all"  slot="All"/>
-            <label for="all" slot="quanxuan">全选</label>
+          <router-link to="/cart/ordernotarize" href="javascript:;" >去结算</router-link>
+          
       </List>
+  </template>
   </div>
 </template>
 
@@ -17,6 +19,15 @@ export default {
   components:{
     List,
     CrumbList
-  }
+  },
+  data () {
+    return {
+      isOpt:false,
+    }
+  },
+  methods: {
+   
+  
+  },
 }
 </script>

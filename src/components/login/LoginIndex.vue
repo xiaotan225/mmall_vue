@@ -5,14 +5,14 @@
       <div class="body">
         <div class="user-name">
           <label for>用户名</label>
-          <input type="text" placeholder="请输入用户名" />
+          <input type="text" placeholder="请输入用户名" v-model="userName" />
         </div>
         <div class="password">
           <label for>密码</label>
-          <input type="text" placeholder="请输入密码" />
+          <input type="password" placeholder="请输入密码" v-model="userPwd" @keyup.enter="login()"/>
         </div>
         <div class="login-btn">
-          <button>登录</button>
+          <button @click="login">登录</button>
         </div>
       </div>
       <div class="options">
@@ -25,7 +25,38 @@
 
 <script>
 import "../../assets/css/loginLayout.css";
-export default {};
+export default {
+  data() {
+    return {
+      userName: "",
+      userPwd: ""
+    };
+  },
+  methods: {
+    login() {
+      this.$axios
+        .post("/users/login", {
+          userName: this.userName,
+          userPwd: this.userPwd
+        })
+        .then(result => {
+          var code = result.data.code;
+          if (code === 1) {
+            alert("登录成功");
+            localStorage.setItem('userName',this.userName)
+            localStorage.setItem('isLogin',"true")
+            this.$router.push("/");
+            
+          } else if (code === 0) {
+            alert('账号或密码错误')
+          }else{
+            alert('登录失败或者账号不存在')
+          }
+        })
+        .catch(err => {});
+    }
+  }
+};
 </script>
 
 

@@ -1,26 +1,33 @@
 <template>
   <div class="product">
     <ul>
-      <li v-for="(item, index) in list" :key="index" >
-        <router-link to="/productdetails">
+      <li v-for="(item, index) in list" :key="index" @click="toProductdetails(item.productID)">
+        <!-- <router-link to="/productdetails/"> -->
+        <a href="javascript:;">
           <!-- <img ="require('../../assets/img/banner/'+slide.imgSrc)" alt=""> -->
 
-          <img v-lazy="require('../../assets/img/floor/'+item.imgSrc)" alt />
+          <img v-lazy="item.imgSrc" alt />
           <strong>￥{{item.price}}</strong>
-          <p>{{item.name}}</p>
-          <p>{{item.eu}}</p>
-        </router-link>
+          <p>{{item.title}}</p>
+          <p>{{item.describe}}</p>
+          <!-- </router-link> -->
+        </a>
       </li>
     </ul>
   </div>
 </template>
 <script>
 export default {
-  props:['list'],
+  props: ["list"],
   data() {
-    return {
-     
-    };
+    return {};
+  },
+  methods: {
+    toProductdetails(id) {
+        sessionStorage.setItem('productType', this.$route.params.searchName)
+
+        this.$router.push('/productdetails/'+id)
+    }
   },
   mounted() {
     var num = 6;
@@ -41,7 +48,6 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-
 .product ul {
   display: flex;
   margin-bottom: 20px;

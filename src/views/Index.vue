@@ -2,6 +2,7 @@
   <div class="index">
     <HeaderNav></HeaderNav>
     <Header></Header>
+
     <HeaderCont></HeaderCont>
     <GoodsRd :titleColor="orange" :productList="electricList">
       <h3>F1&nbsp;家用电器</h3>

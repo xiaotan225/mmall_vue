@@ -1,11 +1,14 @@
 <template>
   <div>
-    <LoginHeader></LoginHeader>
+    <LoginHeader v-if="ishid"></LoginHeader>
+    <!-- <LoginHeader v-if="!ishid"></LoginHeader> -->
+    
     <div class="modul w">
-      <h3>您的商品已成功加入购物车</h3>
+      <h3>{{title}}</h3>
       <div>
-        <router-link to="/productlist">继续购物</router-link>
-        <router-link to="/cart/cartlist">去购物车查看</router-link>
+        <a href="javascript:;" @click="tui" v-if="ishid">继续购物</a>
+        <router-link to="/cart/cartlist" v-if="ishid">去购物车查看</router-link>
+        <slot></slot>
       </div>
     </div>
     <Footer></Footer>
@@ -16,10 +19,31 @@
 import LoginHeader from "../components/public/LoginHeader";
 import Footer from "../components/public/Footer";
 export default {
+  props: {
+    title:{
+      type:String,
+      default:'您的商品已成功加入购物车'
+    },
+    ishid:{
+      type:Boolean,
+      default:true
+    }
+  },
+  data () {
+    return {
+
+    }
+  },
   components: {
     LoginHeader,
     Footer
-  }
+  },
+  methods: {
+      tui(){
+      let name = sessionStorage.getItem('productType')
+      this.$router.push('/productlist/'+name)
+    }
+  },
 };
 </script>
 
