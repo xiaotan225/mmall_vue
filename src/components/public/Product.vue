@@ -1,6 +1,8 @@
 <template>
   <div class="product">
-    <ul>
+    <div></div>
+    <div v-show="!list" class="wu">暂无商品</div>
+    <ul v-show="list && list.length ">
       <li v-for="(item, index) in list" :key="index" @click="toProductdetails(item.productID)">
         <!-- <router-link to="/productdetails/"> -->
         <a href="javascript:;">
@@ -8,8 +10,8 @@
 
           <img v-lazy="item.imgSrc" alt />
           <strong>￥{{item.price}}</strong>
-          <p>{{item.title}}</p>
-          <p>{{item.describe}}</p>
+          <p class="tit">{{item.title}}</p>
+          <p class="describe">{{item.describe}}</p>
           <!-- </router-link> -->
         </a>
       </li>
@@ -22,32 +24,52 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    toProductdetails(id) {
-        sessionStorage.setItem('productType', this.$route.params.searchName)
 
-        this.$router.push('/productdetails/'+id)
+  methods: {
+   
+    toProductdetails(id) {
+      
+      sessionStorage.setItem("productType", this.$route.params.searchName);
+
+      this.$router.push("/productdetails/" + id);
     }
   },
   mounted() {
     var num = 6;
     var myarr = [];
-    for (var i = 0; i < this.list.length; i++) {
+  /*  if(this.list.length){
+      for (var i = 0; i < this.list.length; i++) {
       num += 6 - 1;
       myarr.push(num);
     }
-    var li = document.querySelectorAll("li");
+   } */
+    /* var li = document.querySelectorAll("li");
     myarr.forEach(item => {
       li.forEach((em, index) => {
         if (item == index + 1) {
           em.style.marginLeft = 0;
         }
       });
-    });
+    }); */
   }
 };
 </script>
 <style lang="css" scoped>
+.describe{
+   text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.tit {
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .product ul {
   display: flex;
   margin-bottom: 20px;
@@ -83,5 +105,10 @@ export default {
 }
 .product ul li img {
   width: 100%;
+}
+.wu {
+  text-align: center;
+  font-size: 20px;
+  padding: 10px 0;
 }
 </style>

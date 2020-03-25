@@ -1,26 +1,29 @@
 <template>
   <div class="user-center">
-    <div class="title">
-      <h3>我的信息</h3>
+    <div class="user"  v-if="!isLoading">
+      <div class="title">
+        <h3>我的信息</h3>
+      </div>
+      <div class="body">
+        <ul>
+          <li>用户名：</li>
+          <li>邮箱：</li>
+          <li>电话：</li>
+          <li>地址：</li>
+        </ul>
+        <ol>
+          <li>{{userList.userName}}</li>
+          <li>{{userList.mail}}</li>
+          <li>{{address.mobile}}</li>
+          <li>{{address.value}} {{address.detailSite}}</li>
+        </ol>
+      </div>
+      <div class="redact">
+        <!-- <router-link to="/asdf">编辑</router-link> -->
+      </div>
     </div>
-    <div class="body">
-      <ul>
-        <li>用户名：</li>
-        <li>邮箱：</li>
-        <li>电话：</li>
-        <li>地址：</li>
-      </ul>
-      <ol>
-        <li>{{userList.userName}}</li>
-        <li>{{userList.mail}}</li>
-        <li>{{address.mobile}}</li>
-        <li>{{address.value}} {{address.detailSite}}</li>
 
-      </ol>
-    </div>
-    <div class="redact">
-      <!-- <router-link to="/asdf">编辑</router-link> -->
-    </div>
+    <Loading msg="加载中..." v-if="isLoading"></Loading>
   </div>
 </template>
 
@@ -28,44 +31,42 @@
 export default {
   data() {
     return {
+      isLoading: true,
       userList: {},
-      addressList:[],
-      address:''
+      addressList: [],
+      address: ""
     };
   },
   created() {
     let userName = localStorage.getItem("userName");
     this.$axios
-      .get("/users/getUserList", {
-        params: {
-          userName: userName
-        }
-      })
+      .post("/users/getUser")
       .then(result => {
         let code = result.data.code;
         if (code == 1) {
-          this.userList = result.data.result
-          console.log( result.data.result.addressList)
-          this.addressList = result.data.result.addressList
-         this.addressList.forEach(item => {
-          if(item.checked){
-            this.address = item
-          }
-      });
+          this.isLoading = false
+          this.userList = result.data.result;
+          this.addressList = result.data.result.addressList;
+          this.addressList.forEach(item => {
+            if (item.checked) {
+              this.address = item;
+            }
+          });
         } else {
           alert("获取用户信息失败");
         }
       })
       .catch(err => {});
-     
   }
-
 };
 </script>
 <style lang="css" scoped>
-.user-center {
+.user{
   background-color: #fff;
   padding: 10px;
+}
+.user-center {
+  
 }
 .user-center .title {
   border-bottom: 1px solid #ccc;

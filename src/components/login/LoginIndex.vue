@@ -4,12 +4,10 @@
       <div class="title">用户登录</div>
       <div class="body">
         <div class="user-name">
-          <label for>用户名</label>
-          <input type="text" placeholder="请输入用户名" v-model="userName" />
+          <span class="iconfont icons">&#xe64a;</span><input type="text" placeholder="请输入用户名" v-model="userName" />
         </div>
         <div class="password">
-          <label for>密码</label>
-          <input type="password" placeholder="请输入密码" v-model="userPwd" @keyup.enter="login()"/>
+          <span class="iconfont icons">&#xe60a;</span><input type="password" placeholder="请输入密码" v-model="userPwd" @keyup.enter="login()"/>
         </div>
         <div class="login-btn">
           <button @click="login">登录</button>
@@ -26,6 +24,7 @@
 <script>
 import "../../assets/css/loginLayout.css";
 export default {
+
   data() {
     return {
       userName: "",

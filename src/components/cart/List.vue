@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="cart-list w">
+    <div class="cart-list w" v-if="list.length>0">
       <div class="cart-title">
         <ul>
           <li>
@@ -28,10 +28,9 @@
           </li>
         </ul>
       </div>
-
       <div class="cart-body">
         <div v-if="!isXianshi">
-          <ul v-for="(item, index) in list" :key="index" >
+          <ul v-for="(item, index) in list" :key="index">
             <li @click="cartCountUpdate('checked',item,item.title)">
               <input type="checkbox" v-if="!isShowDel" :checked="item.isOpt" />
             </li>
@@ -47,7 +46,7 @@
             </li>
             <li v-if="!isShowDel">
               <a href="javascript:;" class="add" @click="cartCountUpdate('jian',item,item.title)">-</a>
-              <input type="text" v-model="item.count" class="input" @keydown="keydown(item.count)" />
+              <input type="number" v-model="item.count" class="input" @keydown="keydown(item)" />
               <a href="javascript:;" class="jian" @click="cartCountUpdate('add',item,item.title)">+</a>
             </li>
             <li v-if="isShowDel">{{item.count}}x</li>
@@ -77,7 +76,7 @@
             </li>
             <li v-if="!isShowDel">
               <a href="javascript:;" class="add" @click="cartCountUpdate('jian',item,item.title)">-</a>
-              <input type="text" v-model="item.count" class="input" @keydown="keydown(item.count)" />
+              <input type="text" v-model="item.count" class="input" />
               <a href="javascript:;" class="jian" @click="cartCountUpdate('add',item,item.title)">+</a>
             </li>
             <li v-if="isShowDel">{{item.count}}x</li>
@@ -97,7 +96,7 @@
             <input type="checkbox" id="all" :checked="isOptAll" />
             <label for="all">全选</label>
           </span>
-          <a href="javascript:;" class="all-del" @click="clear">删除选择</a>
+          <a href="javascript:;" class="all-del" @click="clear">全部删除</a>
         </div>
         <div class="right">
           总价：
@@ -106,12 +105,13 @@
         </div>
       </div>
     </div>
+    <div class="wu" v-if="!list.length>0">暂无购物商品</div>
   </div>
 </template>
 
 <script>
 import CrumbList from "../public/CrumbList";
-
+// window.list = 
 export default {
   props: {
     isShowDel: {
@@ -131,6 +131,40 @@ export default {
     };
   },
   methods: {
+    /* 用户输入数量 */
+    keydown(item) {
+      /* if (this.productList.stock <= 0 || this.count == "") {
+        return;
+      } */
+
+      var userName = localStorage.getItem("userName");
+      if (!item.count) {
+        return;
+      }
+
+      if (
+        item.count == "" ||
+        item.count == undefined ||
+        item.count.includes("-")
+      ) {
+        return;
+      }
+      this.$axios
+        .post("/cart/cartCountUpdate", {
+          userName: userName,
+          count: item.count,
+          title: item.title,
+          isOpt: item.isOpt
+        })
+        .then(res => {
+          var code = res.data.code;
+          if (code === "1") {
+          } else {
+            alert("购物车数量添加失败");
+          }
+        });
+    },
+    /* 清空购物车 */
     clear() {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -141,6 +175,7 @@ export default {
           this.getCartData();
         });
     },
+    /* 更新商品数量 和 商品状态*/
     cartCountUpdate(name, item, title) {
       var userName = localStorage.getItem("userName");
       var isOpt = true;
@@ -176,11 +211,15 @@ export default {
         .then(res => {
           var code = res.data.code;
           if (code === "1") {
+          } else if (code === "-2") {
+            alert("没有存货了");
+            this.$router.go(0);
           } else {
             alert("购物车数量添加失败");
           }
         });
     },
+    /* 获取购物车数据 */
     getCartData() {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -193,16 +232,16 @@ export default {
           var code = result.data.code;
           if (code === 1) {
             this.list = result.data.result;
+            window.list = result.data.result
             if (this.$route.name === "ordernotarize") {
               for (let i = 0; i < this.list.length; i++) {
                 if (this.list[i].isOpt) {
                   this.isXianshi = true;
-                  return
+                  return;
                 } else {
                   this.isXianshi = true;
                 }
               }
-              console.log(this.isXianshi)
             } else {
               this.isXianshi = false;
             }
@@ -214,6 +253,7 @@ export default {
           alert("获取购物车数据失败");
         });
     },
+    /* 状态全选 */
     All() {
       var userName = localStorage.getItem("userName");
       var isOpt = null;
@@ -233,6 +273,7 @@ export default {
           }
         });
     },
+    /* 删除商品 */
     del(title) {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -253,6 +294,7 @@ export default {
   created() {
     this.getCartData();
   },
+
   mounted() {},
   computed: {
     isOptAll() {
@@ -276,6 +318,7 @@ export default {
           sum += item.price * item.count;
         }
       });
+      window.total = sum
       return sum;
     }
   }
@@ -284,6 +327,13 @@ export default {
 
 
 <style lang="css" scoped>
+.wu {
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
 .isNone {
 }
 .ti {
@@ -341,6 +391,10 @@ label {
   margin: 5px;
   border: 1px solid #ccc;
   background-color: #fff;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 .cart-body .input {
   width: 50px;

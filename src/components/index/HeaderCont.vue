@@ -1,11 +1,11 @@
 <template>
   <div class="header-cont">
     <div class="box w">
-      <div class="left">
-        <ul>
+      <div class="left" @click="optonName($event)">
+        <ul >
           <li>
-            <a href="javascript:;" @click="optonName($event)">手机</a>
-            <a href="javascript:;" @click="optonName($event)">数码</a>
+            <a href="javascript:;">手机</a>
+            <a href="javascript:;">数码</a>
           </li>
           <li>
             <a href="javascript:;">电脑</a>
@@ -28,10 +28,6 @@
             <a href="javascript:;">家装</a>
 
           </li>
-                    
-  
-  
-  
    
           <li>
             <a href="javascript:;">个护化妆</a>
@@ -79,6 +75,7 @@
         </swiper>
       </div>
     </div>
+   <Loading msg="加载中..." v-if="isLoading"></Loading>
   </div>
 </template>
 
@@ -89,6 +86,7 @@ export default {
   name: "carrousel",
   data() {
     return {
+      isLoading:false,
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 30,
@@ -117,16 +115,21 @@ export default {
   },
   methods: {
     optonName(event) {
-      var e = event.currentTarget;
+      this.isLoading = true
+      var e = event.target;
       var htmlConter = e.innerHTML;
       this.$axios
         .get("/goods/searchGooods?searchName=" + htmlConter)
         .then(res => {
           var code = res.data.code;
           if (code === 1) {
-            this.$router.push({
+           let  {href} =  this.$router.push({
               path: "/productlist/" + htmlConter
             });
+            this.isLoading = false
+
+            this.loading = ''
+          //  window.open(href, '_blank');
           } else if (code === -1) {
             alert("没有搜索到结果");
           } else {
@@ -155,8 +158,11 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.loading{
+  text-align:center;
+
+}
 .header-cont {
-  width: 100%;
 }
 .box {
   display: flex;

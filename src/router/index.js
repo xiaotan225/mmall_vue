@@ -16,7 +16,7 @@ import AmendPass from '../components/mymall/AmendPass.vue'
 import As from '../components/mymall/As.vue'
 import MyOrder from '../components/mymall/MyOrder.vue'
 import MsgModul from '../views/MsgModul.vue'
-
+import axios from 'axios'
 import SuccessOrder from '../components/cart/SuccessOrder.vue'
 
 Vue.use(VueRouter)
@@ -141,19 +141,36 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  var userName = localStorage.getItem('userName')
-  
-  if (userName) {
-    next()
-    return
-  } 
-  if(to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0){
-    next()
-  }else{
-    if (confirm("没有登录是否去登录")) {
-      next('/login/loginIndex')
+ axios.post('/users/getUser').then(res => {
+    if (res.data.code === 1) {
+      var userName = res.data.result.userName
+      localStorage.setItem("userName",userName);
+      localStorage.setItem("isLogin",true);
+      if (userName) {
+        next()
+        return
+      } else {
+        if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0) {
+          next()
+        } else {
+          if (confirm("没有登录是否去登录")) {
+            next('/login/loginIndex')
+          }
+        }
+      }
+    } else {
+      localStorage.clear("userName");
+      localStorage.clear("isLogin");
+      if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0) {
+        next()
+      } else {
+        if (confirm("没有登录是否去登录")) {
+          next('/login/loginIndex')
+        }
+      }
     }
-  }
+  })
+
 
 
 })

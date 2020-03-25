@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <AddSite v-if="isShowAddSite" @close="close"></AddSite>
 
     <CrumbList title="订单确认"></CrumbList>
@@ -23,6 +24,7 @@
               {{item.detailSite}}&nbsp;
               <span>{{item.mobile}}</span>
             </p>
+            <p class="del" @click="del(item)">删除</p>
           </li>
 
           <li class="add-site" @click="showAddSite">
@@ -39,6 +41,7 @@
       <!-- <router-link to="/cart/ordernotarize" href="javascript:;" >去结算</router-link> -->
       <a href="javascript:;" @click="addOrder">确认订单</a>
     </List>
+
   </div>
 </template>
 
@@ -64,6 +67,23 @@ export default {
     };
   },
   methods: {
+    /* 删除地址 */
+    del(item){
+      var userName = localStorage.getItem("userName");
+      this.$axios.post('/site/del',{
+        id:item._id,
+        userName:userName
+      }).then(res=>{
+        var code = res.data.code
+        if(code === 1){
+          alert('删除成功')
+        }
+
+      }).catch(err=>{
+        alert('删除地址失败')
+      })
+    },
+    /* 添加订单 */
     addOrder() {
        if(this.list.length == 0 ){
         alert('地址不能为空')
@@ -82,7 +102,9 @@ export default {
       this.$axios.post("/cart/addOrder", {
         userName: userName,
         goodsData: this.goodsData,
-        siteData: this.siteData
+        siteData: this.siteData,
+        total: window.total
+
       })
       .then(res=>{
         var code = res.data.code
@@ -90,8 +112,11 @@ export default {
         if(code === 1){
           this.$router.push('/successOrder')
 
+        }else if(code == -2){
+          alert('请选择地址')
         }else{
           alert('订单添加失败')
+
         }
       })
     },
@@ -102,6 +127,7 @@ export default {
       this.isShowAddSite = data;
       this.getSiteList();
     },
+    /* 获取地址列表 */
     getSiteList() {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -120,6 +146,7 @@ export default {
         })
         .catch(err => {});
     },
+    /* 设置用户地址状态 */
     setSite(id) {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -136,6 +163,7 @@ export default {
           }
         });
     },
+    /* 获取购物车 */
     getCartData() {
       var userName = localStorage.getItem("userName");
       this.$axios
@@ -163,6 +191,7 @@ export default {
     }
   },
   created() {
+    
     this.getSiteList();
     this.getCartData()
   }
@@ -170,6 +199,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.del{
+  text-align:right;
+  cursor: pointer;
+}
 .guanbi-icon {
 }
 .site-list .add-site {

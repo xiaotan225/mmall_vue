@@ -2,10 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Axios from 'axios'
-// Axios.defaults.baseURL="http://127.0.0.1:3001"; 
-Vue.prototype.$axios = Axios;
 
+import Axios from 'axios'
+// Axios.defaults.baseURL= "http://127.0.0.1:3001"
+Vue.prototype.$axios = Axios;
+Axios.defaults.withCredentials=true
 /* 轮播图插件 */
 import VueAwesomeSwiper from 'vue-awesome-swiper' 
 Vue.use(VueAwesomeSwiper)
@@ -17,6 +18,11 @@ Vue.use(VueLazyload, {
   loading: LazyloadPath,
   try: 3 // default 1
 })
+
+
+/* 全局组件 */
+import Loading from '@/components/public/Loading.vue'
+Vue.component('Loading',Loading)
 
 Vue.config.productionTip = false
 

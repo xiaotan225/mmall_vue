@@ -4,17 +4,14 @@
       <div class="title">用户登录</div>
       <div class="body">
         <div v-if="step === 0">
-          <label for>邮箱</label>
-          <input ref="email" type="email" @keydown="keydown" v-model="mail" placeholder="请输入邮箱" />
+          <span class="iconfont icons">&#xe602;</span><input ref="email" type="email" @keydown="keydown" v-model="mail" placeholder="请输入邮箱" />
         </div>
         <div v-if="step === 1">
-          <label for>验证码</label>
-          <input type="txt" placeholder="请输验证码" class="input-w" v-model="verifyCode" />
+          <span class="iconfont icons">&#xe650;</span><input type="txt" placeholder="请输验证码" class="input-w" v-model="verifyCode" />
           <a href="javascript:;" class="verify" @click="getVerify">{{codeBtnText}}</a>
         </div>
         <div v-if="step === 1">
-          <label for>设置新密码</label>
-          <input type="password" v-model="newPwd" placeholder="设置新密码" />
+          <span class="iconfont icons">&#xe60a;</span><input type="password" v-model="newPwd" placeholder="设置新密码" />
         </div>
         <div class="login-btn">
           <button @click="next">下一步</button>

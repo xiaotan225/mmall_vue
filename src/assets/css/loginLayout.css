@@ -1,7 +1,21 @@
-label {
+/* label {
     display: block;
     margin: 5px 0;
      font-size: 14px;
+  } */
+  .icons{
+    font-size: 25px;
+    padding:2px;
+    color: rgb(131, 131, 131);
+  }
+  .body  div:first-child{
+    margin-top: 25px;
+  }
+  .body  div{
+    margin: 10px 0;
+  }
+  .body  div:last-child{
+    margin: 0;
   }
   .login-index {
     display: flex;

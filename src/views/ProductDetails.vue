@@ -3,11 +3,11 @@
     <HeaderNav></HeaderNav>
     <Header></Header>
     <CrumbList title="商品详情"></CrumbList>
-    <div class="details-list w">
+    <div class="details-list w" v-if="imgSrc">
       <div class="top">
         <div class="left">
           <!-- <img src="../assets/img/floor/floor2-2.jpg" alt /> -->
-          <img v-lazy="productList.imgSrc" alt />
+          <img v-lazy="imgSrc" alt />
         </div>
         <div class="right">
           <h3>{{productList.title}}</h3>
@@ -23,7 +23,15 @@
             </div>
             <div class="count">
               <span>数量：</span>
-              <input type="text" v-model="count" class="input-count" />
+              <input
+                type="number"
+                v-model="count"
+                class="input-count"
+                ref="count"
+                @keydown="keydown(count)"
+                disabled
+              />
+              <!-- <span   class="input-count" >{{}}</span> -->
               <span class="operate">
                 <a href="javascript:;" class="add" @click="add">+</a>
                 <a href="javascript:;" class="jian" @click="jian">-</a>
@@ -41,9 +49,10 @@
           <li
             v-for="(item,index) in productList.childImgSrc"
             :key="index"
-            @mouseover="xuanze(index,item.src)"
+            @mouseover="xuanze(index,item)"
+            :class="index === 0?'currentColor':''"
           >
-            <img v-lazy="item.src" alt />
+            <img v-lazy="item" alt />
           </li>
         </ul>
       </div>
@@ -53,14 +62,13 @@
         </div>
         <div class="body">
           <ul>
-            <li v-for="(item,index) in productList.detailsImgSrc" :key="index">
-              <img v-lazy="item.src" alt />
-            </li>
+            <li v-html="productList.detailsImgSrc"></li>
           </ul>
         </div>
       </div>
     </div>
-    <Footer></Footer>
+     <Loading msg="加载中..." v-if="!imgSrc"></Loading>
+    <Footer v-if="imgSrc"></Footer>
   </div>
 </template>
 
@@ -84,7 +92,21 @@ export default {
     };
   },
   methods: {
+    keydown(count) {
+      /* if (!count) {
+        return
+      }
+      if(count > this.productList.stock){
+        this.productList.stock = 0
+        return
+      }
+       
+      this.productList.stock  = parseInt(this.productList.stock) - parseInt(count); */
+
+    },
     addCart() {
+      let count = this.$refs.count.value;
+
       var userName = localStorage.getItem("userName");
       if (!userName) {
         if (confirm("没有登录是否去登录")) {
@@ -92,6 +114,10 @@ export default {
         }
         return;
       }
+      if (this.productList.stock <= 0 || this.count == "") {
+        return;
+      }
+
       this.$axios
         .post("/cart/addCart", {
           userName: userName,
@@ -99,10 +125,12 @@ export default {
           describe: this.productList.describe,
           price: this.productList.price,
           imgSrc: this.imgSrc,
-          title: this.productList.title
+          title: this.productList.title,
+          stock: this.productList.stock
         })
         .then(res => {
           var code = res.data.code;
+
           if (code === 1) {
             this.$router.push("/msgModul");
           } else {
@@ -118,7 +146,7 @@ export default {
       this.productList.stock--;
     },
     jian() {
-      if (this.count <= 1) {
+      if (this.count <= 1 || this.productList.stock <= 0) {
         return;
       }
       this.count--;
@@ -128,12 +156,14 @@ export default {
       var littleLi = document.querySelectorAll(".little-img li");
       littleLi.forEach((element, index) => {
         if (i === index) {
-          element.style.borderColor = "#c60023";
+          element.classList.add("currentColor");
+          // element.style.borderColor = "#c60023";
         } else {
-          element.style.borderColor = "";
+          element.classList.remove("currentColor");
+          // element.style.borderColor = "";
         }
       });
-      this.productList.imgSrc = src;
+      this.imgSrc = src;
     }
   },
   created() {
@@ -149,7 +179,8 @@ export default {
         var code = result.data.code;
         if (code === 1) {
           this.productList = result.data.result;
-          this.imgSrc = this.productList.imgSrc;
+
+          this.imgSrc = this.productList.childImgSrc[0];
         } else {
         }
       })
@@ -159,6 +190,13 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.loading{
+  display: flex;
+  justify-content:center;
+}
+.currentColor {
+  border: 1px solid #c60023 !important;
+}
 .little-img li:hover {
   cursor: pointer;
 }
@@ -253,12 +291,17 @@ h3 {
   align-items: center;
   padding: 5px 10px;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
 .details-list .right .bottom .input-count {
   width: 40px;
   height: 22px;
   text-align: center;
   margin-right: 5px;
+  background-color: #fff;
 }
 .details-list .right .bottom .operate a {
   width: 20px;

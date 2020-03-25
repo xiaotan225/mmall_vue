@@ -4,24 +4,19 @@
       <div class="title">新用户注册</div>
       <div class="body">
         <div class="user-name">
-          <label for>用户名</label>
-          <input type="text" placeholder="请输入用户名" v-model="userName" @blur="isName" />
+          <span class="iconfont icons">&#xe64a;</span><input type="text" placeholder="请输入用户名" v-model="userName" @blur="isName" />
         </div>
         <div class="password">
-          <label for>密码</label>
-          <input type="password" placeholder="请输入密码" v-model="userPwd" />
+          <span class="iconfont icons">&#xe60a;</span><input type="password" placeholder="请输入密码" v-model="userPwd" />
         </div>
         <div>
-          <label for>确认密码</label>
-          <input type="password" placeholder="请输确认密码" v-model="verifyUserPwd" />
+          <span class="iconfont icons">&#xe60a;</span><input type="password" placeholder="请输确认密码" v-model="verifyUserPwd" />
         </div>
         <div>
-          <label for>邮箱</label>
-          <input ref="email" type="email" @keydown="keydown" v-model="mail" placeholder="请输入邮箱" />
+          <span class="iconfont icons">&#xe602;</span><input ref="email" type="email" @keydown="keydown" v-model="mail" placeholder="请输入qq邮箱" />
         </div>
         <div>
-          <label for>验证码</label>
-          <input type="txt" placeholder="请输验证码" class="input-w" v-model="verifyCode" />
+          <span class="iconfont icons">&#xe650;</span><input type="txt" placeholder="请输验证码" class="input-w" v-model="verifyCode" />
           <a href="javascript:;" class="verify" @click="getVerify">{{codeBtnText}}</a>
         </div>
         <div class="login-btn">
@@ -112,6 +107,7 @@ export default {
             mail: this.mail
           })
           .then(result => {
+            console.log(result)
             var code = result.data.code;
             if (code === 1) {
              
@@ -133,6 +129,7 @@ export default {
           verifyCode: this.verifyCode
         })
         .then(result => {
+          console.log(result)
           var code = result.data.code;
           if (code === 1) {
            this.isMsgModul = true

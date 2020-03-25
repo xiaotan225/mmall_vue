@@ -1,5 +1,6 @@
 <template>
   <div class="add-site">
+    <!-- <manyAreaSelect :selectedData.sync="manyAreaValue"></manyAreaSelect> -->
     <div class="add-box">
       <div class="title">
         <h3>使用新地址</h3>
@@ -9,84 +10,117 @@
         <ul>
           <li>
             <label for>收件人姓名：</label>
-            <input type="text" placeholder="请输入收件人姓名" v-model="options.name"/>
+            <input type="text" placeholder="请输入收件人姓名" v-model="options.name" />
           </li>
           <li>
             <label for>所在城市：</label>
-            <select @change="chang1" >
-              <!-- <option v-for="(item, index) in cityList" :key="index">{{item.nm}}</option> -->
-              <option>北京</option>
-              <option >山东省</option>
-
-            </select>
-            <select @change="chang2">
-              <option>上海</option>
-              <option>济南市</option>
-
-              <option>北京</option>
-            </select>
+            <VDistpicker @province="onChangeProvince" @city="onChangeCity" @area="onChangeArea"></VDistpicker>
           </li>
           <li>
             <label for>详细地址：</label>
-            <input type="text" placeholder="请输入详细地址"  v-model="options.detailSite"/>
+            <input type="text" placeholder="请输入详细地址" v-model="options.detailSite" />
           </li>
           <li>
             <label for>收件人手机号：</label>
-            <input type="text" placeholder="请输入11位手机号" v-model="options.mobile"/>
+            <!-- <input type="tel" placeholder="请输入11位手机号"  v-model="options.mobile"/> -->
+            <input
+              id="username"
+              class="weui-input"
+              type="text"
+              v-model="options.mobile"
+              placeholder="请输入手机号"
+              maxlength="11"
+              onpaste="return false;"
+              @keyup="displayResult"
+            />
           </li>
-          
+
           <li>
             <a href="javascript:;" class="save" @click="addSite">保存收货地址</a>
           </li>
         </ul>
-      
       </div>
     </div>
   </div>
 </template>
 <script>
+import VDistpicker from "v-distpicker";
 export default {
   props: ["close"],
+  components: { VDistpicker },
   data() {
     return {
       cityList: [],
-      value1:'',
-      value2:'',
-      options:{
-          name:'',
-          value:'',
-          detailSite:'',
-          mobile:'',
-          
+      site: {
+        province: "",
+        city: "",
+        district: ""
+      },
+      options: {
+        name: "",
+        value: "",
+        detailSite: "",
+        mobile: ""
       }
     };
   },
+  computed: {
+    newSite() {
+      let { province, city, district } = this.site;
+      if(!province || !city || !district){
+        return ''
+      }
+      return province + " " + city + " " + district;
+    }
+  },
   methods: {
-    chang1(event) {
-        this.value1 = event.target.value
+    displayResult() {
+      var name = this.options.mobile;
+      var nameValue = name.replace(/\D/g, "");
+      this.options.mobile = nameValue;
     },
-    chang2(event){
-        this.value2 = event.target.value
+    onChangeProvince(data) {
+      this.site.province = data.value;
     },
-    addSite(){
-        var userName = localStorage.getItem('userName')
-        this.$axios.post('/site/addSite',{
-            userName:userName,
-            name:this.options.name,
-            value:this.value1 + this.value2,
-            detailSite:this.options.detailSite,
-            mobile:this.options.mobile,
-            checked:true
-        })
-        .then(res=>{
-            var code = res.data.code
-            if(code == 1){
-                this.guanbu()
-               
-            }else{
-                alert('地址添加失败')
+    onChangeCity(data) {
+      this.site.city = data.value;
+    },
+    onChangeArea(data) {
+      this.site.district = data.value;
+    },
+    addSite() {
+      if (!this.options.name) {
+        alert("请填写名称");
+        return;
+      }
+      if (!this.newSite) {
+        alert("请选择地址");
+        return;
+      }
+
+      if (this.options.mobile.length == 11) {
+        var userName = localStorage.getItem("userName");
+        this.$axios
+          .post("/site/addSite", {
+            userName: userName,
+            name: this.options.name,
+            value: this.newSite,
+            detailSite: this.options.detailSite,
+            mobile: this.options.mobile,
+            checked: true
+          })
+          .then(res => {
+            var code = res.data.code;
+            if (code == 1) {
+              this.guanbu();
+            } else {
+              alert("地址添加失败");
             }
-        })
+          });
+      } else {
+        alert("请输入正确的手机号");
+        return;
+      }
     },
     guanbu() {
       this.$emit("close", false);
@@ -106,6 +140,7 @@ export default {
 };
 </script>
 <style lang="css" scoped>
+
 .save {
   display: inline-block;
   width: 100px;

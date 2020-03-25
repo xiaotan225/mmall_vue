@@ -1,5 +1,6 @@
 <template>
   <div class="product-list">
+     <Loading msg="加载中..." v-if="isLoading"></Loading>
     <HeaderNav></HeaderNav>
     <Header :list="list" @setData="setData"></Header>
     <CrumbList title="商品列表"></CrumbList>
@@ -13,9 +14,10 @@
     <div class="prod w">
       <Product :list="list"></Product>
     </div>
-    <Footer></Footer>
+    <Footer  v-if="!isLoading"></Footer>
   </div>
 </template>
+
 
 <script>
 import Header from "../components/public/Header";
@@ -23,6 +25,7 @@ import HeaderNav from "../components/public/HeaderNav";
 import Footer from "../components/public/Footer";
 import CrumbList from "../components/public/CrumbList";
 import Product from "../components/public/Product.vue";
+
 export default {
   components: {
     Header,
@@ -35,7 +38,8 @@ export default {
     return {
       list: [],
       sortSign: false,
-      isPick: false
+      isPick: false,
+      isLoading:true
     };
   },
   methods: {
@@ -45,19 +49,37 @@ export default {
     },
     getGoodsList() {
       var searchName = this.$route.params.searchName;
-      this.$axios
-        .get("/goods/searchGooods?searchName=" + searchName)
-        .then(result => {
-          var code = result.data.code;
-          if (code === 1) {
-            this.list = result.data.result;
-          } else if (code === -1) {
-            alert("没有搜索到结果");
-          } else {
-            alert("搜索失败");
-          }
-        })
-        .catch(err => {});
+      if (searchName.includes(1000)) {
+        this.$axios
+          .get('/goods/categoryId?categoryId='+searchName)
+          .then(result => {
+            var code = result.data.code;
+            if (code === 1) {
+              this.isLoading = false
+              this.list = result.data.result;
+            } else if (code === -1) {
+              alert("没有搜索到结果");
+            } else {
+              alert("搜索失败");
+            }
+          })
+          .catch(err => {});
+      } else {
+        this.$axios
+          .get("/goods/searchGooods?searchName=" + searchName)
+          .then(result => {
+            var code = result.data.code;
+            if (code === 1) {
+              this.isLoading = false
+              this.list = result.data.result;
+            } else if (code === -1) {
+              alert("没有搜索到结果");
+            } else {
+              alert("搜索失败");
+            }
+          })
+          .catch(err => {});
+      }
     },
     setData(data) {
       this.list = data;
@@ -116,7 +138,7 @@ export default {
   font-weight: bold;
 }
 .sortord i.shang {
-      top: -2px;
+  top: -2px;
   transform: rotate(0);
   transition: all 0.3s ease-out;
 }

@@ -5,8 +5,8 @@
     </div>
     <div class="body">
       <ul>
-        <li v-for="(item, index) in productList" :key="index">
-          <a href="#">
+        <li v-for="(item, index) in productList" :key="index" @click="categoryId(item.categoryId)">
+          <a href="javascript:;">
             <h4>{{item.title}}</h4>
             <img v-lazy="require('../../assets/img/floor/'+item.imgSrc)" alt="">
           </a>
@@ -18,11 +18,13 @@
 
 <script>
 export default {
-    props:['titleColor','productList'],
+    props:['titleColor','productList','count'],
     data() {
         return {
-          
         }
+    },
+    computed: {
+      
     },
     methods: {
         selectColor(){
@@ -32,7 +34,12 @@ export default {
                     this.titleColor = item
                 }
             });
-        }
+        },
+        categoryId(categoryId){
+           this.$router.push({
+              path: "/productlist/" + categoryId
+            });
+        },
     },
     mounted() {
         this.selectColor()

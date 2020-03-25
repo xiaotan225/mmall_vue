@@ -8,7 +8,8 @@
 import './assets/css/normalize.css'
 import './assets/css/main.css'
 export default {
-  
+  created() {
+  },
 }
 </script>
 
