@@ -87,6 +87,6 @@ export default {
   display: inline-block;
   text-align: center;
   padding-top: 10px;
- padding-bottom: 10.5px;
+    padding-bottom: 11.5px;
 }
 </style>

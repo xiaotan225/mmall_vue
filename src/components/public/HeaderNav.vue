@@ -16,7 +16,7 @@
         </router-link>
         <router-link to="/myMall/myOrder">我的订单</router-link>
         <router-link to="/myMall/userCenter">我的Mall</router-link>
-        <router-link to="/aboutMall">关于Mall</router-link>
+        <router-link to="/myMall/as">关于Mall</router-link>
       </div>
     </nav>
   </div>

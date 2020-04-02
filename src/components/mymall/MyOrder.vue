@@ -1,6 +1,6 @@
 <template>
   <div class="my-order">
-    <Loading msg="加载中..." v-if="!orderList.length"></Loading>
+    <Loading msg="加载中..." v-if="loading"></Loading>
     <div class="wu" v-if="wu">暂无订单</div>
     <div v-if="orderList.length" class="order">
       <h3 class="header-title">我的订单</h3>
@@ -24,7 +24,6 @@
               </span>
               <span class="order-text">{{item.createDate}}</span>
               <span class="order-text">收件人：{{item.siteData.name}}</span>
-              <span class="order-text">订单状态：已取消</span>
               <span class="order-text">
                 订单总价：
                 <span class="special">￥{{item.total}}</span>
@@ -56,8 +55,8 @@ export default {
     return {
       orderList: [],
       totalList: [],
-      wu:false
-
+      wu:false,
+      loading:true,
     };
   },
   methods: {
@@ -72,9 +71,13 @@ export default {
           let code = result.data.code;
           if (code === 1) {
             this.orderList = result.data.result;
+            console.log(this.orderList)
+
             if(!this.orderList.length){
               this.wu = true
             }
+              this.loading = false
+
           } else {
             alert("获取订单数据失败");
           }

@@ -123,6 +123,34 @@ const routes = [
     ]
   },
 
+  {
+    path:'/admin',
+    name:'admin',
+    component: () => import('@/views/admin'),
+    children: [
+      {
+        path: 'users',
+        name: 'users',
+        component: () => import('@/views/admin/users.vue'),
+      },
+      {
+        path: 'product',
+        name: 'product',
+        component: () => import('@/views/admin/product'),
+      },
+      {
+        path: 'order',
+        name: 'order',
+        component: () => import('@/views/admin/order'),
+      },
+      {
+        path: 'orderDetails/:orderId',
+        name: 'orderDetails',
+        component: () => import('@/views/admin/orderDetails'),
+      },
+      { path: '/', redirect: '/admin/users' },
+    ]
+  }
   // {
   //   path: '/about',
   //   name: 'about',
@@ -150,7 +178,7 @@ router.beforeEach((to, from, next) => {
         next()
         return
       } else {
-        if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0) {
+        if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0 ) {
           next()
         } else {
           if (confirm("没有登录是否去登录")) {
@@ -161,7 +189,7 @@ router.beforeEach((to, from, next) => {
     } else {
       localStorage.clear("userName");
       localStorage.clear("isLogin");
-      if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0) {
+      if (to.path == '/' || to.path.indexOf('/login') >= 0 || to.path.indexOf('/productlist') >= 0 || to.path.indexOf('/productdetails') >= 0 ) {
         next()
       } else {
         if (confirm("没有登录是否去登录")) {

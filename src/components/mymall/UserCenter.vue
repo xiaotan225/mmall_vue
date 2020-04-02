@@ -1,6 +1,6 @@
 <template>
   <div class="user-center">
-    <div class="user"  v-if="!isLoading">
+    <div class="user" v-if="!isLoading">
       <div class="title">
         <h3>我的信息</h3>
       </div>
@@ -10,12 +10,16 @@
           <li>邮箱：</li>
           <li>电话：</li>
           <li>地址：</li>
+          <li v-if="isAdmin">管理员：</li>
         </ul>
         <ol>
           <li>{{userList.userName}}</li>
           <li>{{userList.mail}}</li>
           <li>{{address.mobile}}</li>
           <li>{{address.value}} {{address.detailSite}}</li>
+          <li v-if="isAdmin">
+            <router-link to="/admin" target="_blank" class="to-admin">管理员页面</router-link>
+          </li>
         </ol>
       </div>
       <div class="redact">
@@ -34,17 +38,28 @@ export default {
       isLoading: true,
       userList: {},
       addressList: [],
-      address: ""
+      address: "",
+      isAdmin:false
     };
   },
   created() {
     let userName = localStorage.getItem("userName");
+     this.$axios.post('/users/isAdmin').then((result) => {
+      if(result.data.code == 0){
+        this.isAdmin =true
+      }else{
+        this.isAdmin =false
+      }
+      
+    }).catch((err) => {
+      
+    });
     this.$axios
       .post("/users/getUser")
       .then(result => {
         let code = result.data.code;
         if (code == 1) {
-          this.isLoading = false
+          this.isLoading = false;
           this.userList = result.data.result;
           this.addressList = result.data.result.addressList;
           this.addressList.forEach(item => {
@@ -61,13 +76,11 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.user{
+.user {
   background-color: #fff;
   padding: 10px;
 }
-.user-center {
-  
-}
+
 .user-center .title {
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
@@ -105,5 +118,8 @@ export default {
   text-align: center;
   line-height: 30px;
   border-radius: 2px;
+}
+.to-admin {
+  color: blue;
 }
 </style>

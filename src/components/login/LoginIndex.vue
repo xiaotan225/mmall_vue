@@ -45,9 +45,10 @@ export default {
             localStorage.setItem('userName',this.userName)
             localStorage.setItem('isLogin',"true")
             this.$router.push("/");
-            
           } else if (code === 0) {
             alert('账号或密码错误')
+          }else if(code === -2){
+            alert('账号已冻结')
           }else{
             alert('登录失败或者账号不存在')
           }
