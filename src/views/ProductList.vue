@@ -1,8 +1,8 @@
 <template>
   <div class="product-list">
-     <Loading msg="加载中..." v-if="isLoading"></Loading>
+     <Loading msg="加载中" v-if="isLoading"></Loading>
     <HeaderNav></HeaderNav>
-    <Header :list="list" @setData="setData"></Header>
+    <Header :list="list"></Header>
     <CrumbList title="商品列表"></CrumbList>
     <div class="sortord w">
       <span class="default" @click="def" :class="!isPick?'zuanzhong':''">默认排序</span>
@@ -43,10 +43,12 @@ export default {
     };
   },
   methods: {
+    /* 默认排序 */
     def() {
       this.isPick = false;
       this.getGoodsList();
     },
+    /* 获取商品数据 */
     getGoodsList() {
       var searchName = this.$route.params.searchName;
       if (searchName.includes(1000)) {
@@ -63,7 +65,9 @@ export default {
               alert("搜索失败");
             }
           })
-          .catch(err => {});
+          .catch(err => {
+            alert('获取商品失败')
+          });
       } else {
         this.$axios
           .get("/goods/searchGooods?searchName=" + searchName)
@@ -78,12 +82,12 @@ export default {
               alert("搜索失败");
             }
           })
-          .catch(err => {});
+          .catch(err => {
+            alert('获取商品失败')
+          });
       }
     },
-    setData(data) {
-      this.list = data;
-    },
+    
     sort() {
       this.isPick = true;
       this.sortSign = !this.sortSign;
@@ -105,6 +109,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.product-list{
+  
+}
 .product-list .prod {
   margin-top: 20px;
 }

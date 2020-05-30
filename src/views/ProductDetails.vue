@@ -23,14 +23,7 @@
             </div>
             <div class="count">
               <span>数量：</span>
-              <input
-                type="number"
-                v-model="count"
-                class="input-count"
-                ref="count"
-                @keydown="keydown(count)"
-                disabled
-              />
+              <input type="number" v-model="count" class="input-count" ref="count" disabled />
               <!-- <span   class="input-count" >{{}}</span> -->
               <span class="operate">
                 <a href="javascript:;" class="add" @click="add">+</a>
@@ -67,7 +60,7 @@
         </div>
       </div>
     </div>
-     <Loading msg="加载中..." v-if="!imgSrc"></Loading>
+    <Loading msg="加载中" v-if="!imgSrc"></Loading>
     <Footer v-if="imgSrc"></Footer>
   </div>
 </template>
@@ -92,21 +85,9 @@ export default {
     };
   },
   methods: {
-    keydown(count) {
-      /* if (!count) {
-        return
-      }
-      if(count > this.productList.stock){
-        this.productList.stock = 0
-        return
-      }
-       
-      this.productList.stock  = parseInt(this.productList.stock) - parseInt(count); */
-
-    },
+    /* 添加购物车 */
     addCart() {
       let count = this.$refs.count.value;
-
       var userName = localStorage.getItem("userName");
       if (!userName) {
         if (confirm("没有登录是否去登录")) {
@@ -138,6 +119,7 @@ export default {
           }
         });
     },
+    /* 商品数量+ */
     add() {
       if (this.productList.stock <= 0) {
         return;
@@ -145,6 +127,7 @@ export default {
       this.count++;
       this.productList.stock--;
     },
+    /* 商品数量- */
     jian() {
       if (this.count <= 1 || this.productList.stock <= 0) {
         return;
@@ -152,6 +135,7 @@ export default {
       this.count--;
       this.productList.stock++;
     },
+    /* 小图选大图 */
     xuanze(i, src) {
       var littleLi = document.querySelectorAll(".little-img li");
       littleLi.forEach((element, index) => {
@@ -164,35 +148,42 @@ export default {
         }
       });
       this.imgSrc = src;
+    },
+    /* 获取商品详情数据 */
+    getDetails() {
+      var productType = sessionStorage.getItem("productType");
+      this.$axios
+        .get("/goods/details", {
+          params: {
+            searchName: productType,
+            productID: this.$route.params.id
+          }
+        })
+        .then(result => {
+          var code = result.data.code;
+          if (code === 1) {
+            this.productList = result.data.result;
+
+            this.imgSrc = this.productList.childImgSrc[0];
+          } else {
+            alert("获取数据失败");
+          }
+        })
+        .catch(err => {
+          alert("获取数据失败");
+        });
     }
   },
   created() {
-    var productType = sessionStorage.getItem("productType");
-    this.$axios
-      .get("/goods/details", {
-        params: {
-          searchName: productType,
-          productID: this.$route.params.id
-        }
-      })
-      .then(result => {
-        var code = result.data.code;
-        if (code === 1) {
-          this.productList = result.data.result;
-
-          this.imgSrc = this.productList.childImgSrc[0];
-        } else {
-        }
-      })
-      .catch(err => {});
+    this.getDetails()
   }
 };
 </script>
 
 <style lang="css" scoped>
-.loading{
+.loading {
   display: flex;
-  justify-content:center;
+  justify-content: center;
 }
 .currentColor {
   border: 1px solid #c60023 !important;

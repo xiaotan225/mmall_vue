@@ -1,8 +1,6 @@
 <template>
   <div>
     <LoginHeader v-if="ishid"></LoginHeader>
-    <!-- <LoginHeader v-if="!ishid"></LoginHeader> -->
-    
     <div class="modul w">
       <h3>{{title}}</h3>
       <div>

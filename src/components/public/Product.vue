@@ -1,18 +1,13 @@
 <template>
   <div class="product">
-    <div></div>
     <div v-show="!list" class="wu">暂无商品</div>
     <ul v-show="list && list.length ">
       <li v-for="(item, index) in list" :key="index" @click="toProductdetails(item.productID)">
-        <!-- <router-link to="/productdetails/"> -->
         <a href="javascript:;">
-          <!-- <img ="require('../../assets/img/banner/'+slide.imgSrc)" alt=""> -->
-
           <img v-lazy="item.imgSrc" alt />
           <strong>￥{{item.price}}</strong>
           <p class="tit">{{item.title}}</p>
           <p class="describe">{{item.describe}}</p>
-          <!-- </router-link> -->
         </a>
       </li>
     </ul>
@@ -26,11 +21,8 @@ export default {
   },
 
   methods: {
-   
     toProductdetails(id) {
-      
       sessionStorage.setItem("productType", this.$route.params.searchName);
-
       this.$router.push("/productdetails/" + id);
     }
   },

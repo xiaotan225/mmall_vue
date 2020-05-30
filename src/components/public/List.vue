@@ -4,12 +4,8 @@
       <div class="cart-title">
         <ul>
           <li>
-            <!-- <input type="checkbox" id="all" />
-
-            <label for="all">全选</label>-->
             <input type="checkbox" id="quanxuan" v-if="!isShowDel" :checked="isOptAll" @click="All" />
             <label for="quanxuan" v-if="!isShowDel">全选</label>
-            <!-- <slot name="checkboxAll"></slot> -->
           </li>
           <li>
             <span>商品信息</span>
@@ -36,7 +32,6 @@
             </li>
             <li>
               <a href="javascript:;" class="info">
-                <!-- <img src="../../assets/img/floor/floor2-2.jpg" alt /> -->
                 <img v-lazy="item.imgSrc" alt />
                 <span>{{item.title}}</span>
               </a>
@@ -58,36 +53,7 @@
             </li>
           </ul>
         </div>
-
-        <div v-if="isXianshi">
-          <ul v-for="(item, index) in list" :key="index" v-if="item.isOpt">
-            <li @click="cartCountUpdate('checked',item,item.title)">
-              <input type="checkbox" v-if="!isShowDel" :checked="item.isOpt" />
-            </li>
-            <li>
-              <a href="javascript:;" class="info">
-                <!-- <img src="../../assets/img/floor/floor2-2.jpg" alt /> -->
-                <img v-lazy="item.imgSrc" alt />
-                <span>{{item.title}}</span>
-              </a>
-            </li>
-            <li>
-              <em>{{item.price}}</em>
-            </li>
-            <li v-if="!isShowDel">
-              <a href="javascript:;" class="add" @click="cartCountUpdate('jian',item,item.title)">-</a>
-              <input type="text" v-model="item.count" class="input" />
-              <a href="javascript:;" class="jian" @click="cartCountUpdate('add',item,item.title)">+</a>
-            </li>
-            <li v-if="isShowDel">{{item.count}}x</li>
-            <li :class="isShowDel?'rt':''">
-              <em>{{item.price * item.count}}</em>
-            </li>
-            <li v-if="!isShowDel">
-              <a href="javascript:;" class="del" @click="del(item.title)">删除</a>
-            </li>
-          </ul>
-        </div>
+        <slot name="aa" v-if="isXianshi" :list="list"></slot>
       </div>
 
       <div class="cart-bottom">
@@ -100,8 +66,8 @@
         </div>
         <div class="right">
           总价：
-          <em class="color-red">￥{{total}}</em>
-          <slot></slot>
+          <em class="color-red">￥{{total?total:0}}</em>
+          <slot name="bb"></slot>
         </div>
       </div>
     </div>
@@ -110,8 +76,6 @@
 </template>
 
 <script>
-import CrumbList from "../public/CrumbList";
-// window.list = 
 export default {
   props: {
     isShowDel: {
@@ -120,7 +84,6 @@ export default {
     }
   },
   components: {
-    CrumbList
   },
   data() {
     return {
@@ -133,10 +96,6 @@ export default {
   methods: {
     /* 用户输入数量 */
     keydown(item) {
-      /* if (this.productList.stock <= 0 || this.count == "") {
-        return;
-      } */
-
       var userName = localStorage.getItem("userName");
       if (!item.count) {
         return;
@@ -232,7 +191,7 @@ export default {
           var code = result.data.code;
           if (code === 1) {
             this.list = result.data.result;
-            window.list = result.data.result
+            window.list = result.data.result;
             if (this.$route.name === "ordernotarize") {
               for (let i = 0; i < this.list.length; i++) {
                 if (this.list[i].isOpt) {
@@ -294,9 +253,8 @@ export default {
   created() {
     this.getCartData();
   },
-
-  mounted() {},
   computed: {
+    /* 是否全选 */
     isOptAll() {
       var leng = this.list.length;
       var num = null;
@@ -311,6 +269,7 @@ export default {
         return false;
       }
     },
+    /* 全部价格 */
     total() {
       let sum = null;
       this.list.forEach(item => {
@@ -318,7 +277,7 @@ export default {
           sum += item.price * item.count;
         }
       });
-      window.total = sum
+      window.total = sum;
       return sum;
     }
   }

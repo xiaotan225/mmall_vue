@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <Loading msg="加载中..." v-if="isLoading"></Loading>
+    <Loading msg="加载中" v-if="isLoading"></Loading>
   </div>
 </template>
 

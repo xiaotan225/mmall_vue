@@ -22,6 +22,7 @@ import SuccessOrder from '../components/cart/SuccessOrder.vue'
 Vue.use(VueRouter)
 
 const routes = [
+  // {path:'/', redirect:{name:'asdf'}},
 
   {
     path: '/',
@@ -149,8 +150,15 @@ const routes = [
         component: () => import('@/views/admin/orderDetails'),
       },
       { path: '/', redirect: '/admin/users' },
+      
     ]
-  }
+  },
+  {
+    path: '*',
+    name: '',
+    component: Index,
+
+  },
   // {
   //   path: '/about',
   //   name: 'about',
@@ -162,7 +170,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: "hash",
+  mode: "history",
   base: process.env.BASE_URL,
   routes,
 

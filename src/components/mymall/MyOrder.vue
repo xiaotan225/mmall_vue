@@ -1,6 +1,6 @@
 <template>
   <div class="my-order">
-    <Loading msg="加载中..." v-if="loading"></Loading>
+    <Loading msg="加载中" v-if="loading"></Loading>
     <div class="wu" v-if="wu">暂无订单</div>
     <div v-if="orderList.length" class="order">
       <h3 class="header-title">我的订单</h3>
@@ -55,8 +55,8 @@ export default {
     return {
       orderList: [],
       totalList: [],
-      wu:false,
-      loading:true,
+      wu: false,
+      loading: true
     };
   },
   methods: {
@@ -71,13 +71,10 @@ export default {
           let code = result.data.code;
           if (code === 1) {
             this.orderList = result.data.result;
-            console.log(this.orderList)
-
-            if(!this.orderList.length){
-              this.wu = true
+            if (!this.orderList.length) {
+              this.wu = true;
             }
-              this.loading = false
-
+            this.loading = false;
           } else {
             alert("获取订单数据失败");
           }
@@ -85,8 +82,7 @@ export default {
         .catch(err => {
           alert("获取订单数据失败");
         });
-    },
-    
+    }
   },
   created() {
     this.getOrderData();

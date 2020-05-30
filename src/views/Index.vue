@@ -22,6 +22,7 @@ import HeaderCont from "../components/index/HeaderCont";
 import GoodsRd from "../components/index/GoodsRd";
 import Footer from "../components/public/Footer";
 
+
 export default {
   name: "index",
   created() {},
@@ -116,7 +117,6 @@ export default {
   text-decoration: none;
 }
 .fo {
-  height: 100px;
   position: relative;
 }
 </style>

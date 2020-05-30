@@ -27,14 +27,6 @@ export default {
       
     },
     methods: {
-        selectColor(){
-            var arr = ['orange','red']
-            arr.forEach(item => {
-                if(item == this.titleColor){
-                    this.titleColor = item
-                }
-            });
-        },
         categoryId(categoryId){
            this.$router.push({
               path: "/productlist/" + categoryId
@@ -42,7 +34,6 @@ export default {
         },
     },
     mounted() {
-        this.selectColor()
     },
 };
 </script>

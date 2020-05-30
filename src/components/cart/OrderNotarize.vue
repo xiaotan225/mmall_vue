@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <AddSite v-if="isShowAddSite" @close="close"></AddSite>
 
     <CrumbList title="订单确认"></CrumbList>
@@ -38,17 +37,37 @@
       <h3>商品清单</h3>
     </div>
     <List :isShowDel="isShowDel">
-      <!-- <router-link to="/cart/ordernotarize" href="javascript:;" >去结算</router-link> -->
-      <a href="javascript:;" @click="addOrder">确认订单</a>
+      <template v-slot:aa="{list}">
+        <div v-for="(item, index) in list" :key="index">
+          <ul v-if="item.isOpt">
+            <li></li>
+            <li>
+              <a href="javascript:;" class="info">
+                <img v-lazy="item.imgSrc" alt />
+                <span>{{item.title}}</span>
+              </a>
+            </li>
+            <li>
+              <em>{{item.price}}</em>
+            </li>
+            <li>{{item.count}}x</li>
+            <li :class="isShowDel?'rt':''">
+              <em>{{item.price * item.count}}</em>
+            </li>
+          </ul>
+        </div>
+      </template>
+      <template v-slot:bb>
+        <a href="javascript:;" @click="addOrder">确认订单</a>
+      </template>
     </List>
-
   </div>
 </template>
 
 <script>
 import CrumbList from "../public/CrumbList";
 import AddSite from "./AddSite";
-import List from "./List";
+import List from "@/components/public/List.vue";
 export default {
   components: {
     List,
@@ -63,62 +82,62 @@ export default {
       checked: "",
       list: [],
       goodsData: [],
-      siteData:{}
+      siteData: {}
     };
   },
   methods: {
     /* 删除地址 */
-    del(item){
+    del(item) {
       var userName = localStorage.getItem("userName");
-      this.$axios.post('/site/del',{
-        id:item._id,
-        userName:userName
-      }).then(res=>{
-        var code = res.data.code
-        if(code === 1){
-          alert('删除成功')
-        }
-
-      }).catch(err=>{
-        alert('删除地址失败')
-      })
+      this.$axios
+        .post("/site/del", {
+          id: item._id,
+          userName: userName
+        })
+        .then(res => {
+          var code = res.data.code;
+          if (code === 1) {
+            alert("删除成功");
+          }
+        })
+        .catch(err => {
+          alert("删除地址失败");
+        });
     },
     /* 添加订单 */
     addOrder() {
-       if(this.list.length == 0 ){
-        alert('地址不能为空')
-        return
+      if (this.list.length == 0) {
+        alert("地址不能为空");
+        return;
       }
-      if(this.goodsData.length == 0){
-        alert('商品不能为空')
-        return
+      if (this.goodsData.length == 0) {
+        alert("商品不能为空");
+        return;
       }
       this.list.forEach(item => {
-        if(item.checked){
-          this.siteData = item
+        if (item.checked) {
+          this.siteData = item;
         }
       });
       var userName = localStorage.getItem("userName");
-      this.$axios.post("/cart/addOrder", {
-        userName: userName,
-        goodsData: this.goodsData,
-        siteData: this.siteData,
-        total: window.total
+      this.$axios
+        .post("/cart/addOrder", {
+          userName: userName,
+          goodsData: this.goodsData,
+          siteData: this.siteData,
+          total: window.total
+        })
+        .then(res => {
+          var code = res.data.code;
 
-      })
-      .then(res=>{
-        var code = res.data.code
-
-        if(code === 1){
-          this.$router.push('/successOrder')
-
-        }else if(code == -2){
-          alert('请选择地址')
-        }else{
-          alert('订单添加失败')
-
-        }
-      })
+          if (code === 1) {
+            this.$router.push("/successOrder");
+          } else if (code == -2) {
+            alert("请选择地址");
+          } else {
+            alert("订单添加失败");
+          }
+        });
     },
     showAddSite() {
       this.isShowAddSite = true;
@@ -191,18 +210,18 @@ export default {
     }
   },
   created() {
-    
     this.getSiteList();
-    this.getCartData()
+    this.getCartData();
   }
 };
 </script>
 
 <style lang="css" scoped>
-.del{
-  text-align:right;
+.del {
+  text-align: right;
   cursor: pointer;
 }
+
 .guanbi-icon {
 }
 .site-list .add-site {

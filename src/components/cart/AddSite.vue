@@ -7,7 +7,7 @@
         <i @click="guanbu">×</i>
       </div>
       <div class="body">
-        <ul>
+        <ul class="body-cont">
           <li>
             <label for>收件人姓名：</label>
             <input type="text" placeholder="请输入收件人姓名" v-model="options.name" />
@@ -67,8 +67,8 @@ export default {
   computed: {
     newSite() {
       let { province, city, district } = this.site;
-      if(!province || !city || !district){
-        return ''
+      if (!province || !city || !district) {
+        return "";
       }
       return province + " " + city + " " + district;
     }
@@ -140,16 +140,25 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-
 .save {
   display: inline-block;
   width: 100px;
   height: 30px;
-  background-color: red;
+  background-color: #c60023;
   text-align: center;
   line-height: 30px;
   color: #fff;
   margin-left: 70px;
+}
+.body-cont {
+  font-size: 0.8rem;
+
+}
+.body-cont input{
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #464a4c;
+  padding: 3px;
+  border-radius: 0.25rem;
 }
 .add-box .body select + select {
   margin-left: 10px;
@@ -195,6 +204,7 @@ export default {
 }
 label {
   width: 100px;
-  text-align-last: center;
+  text-align: right;
+  padding: 3px;
 }
 </style>

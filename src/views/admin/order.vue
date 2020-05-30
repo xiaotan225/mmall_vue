@@ -73,13 +73,13 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
+
       })
         .then(() => {
           let { orderCode,account } = row;
           this.$axios
             .post("/cart/cartDelete", { orderCode: orderCode,userName:account })
             .then(result => {
-              console.log(result);
               let code = result.data.code;
               if (code === 0) {
                 this.getOrderAll();
@@ -108,7 +108,9 @@ export default {
             alert("获取订单信息失败");
           }
         })
-        .catch(err => {});
+        .catch(err => {
+           alert("获取订单信息失败");
+        });
     }
   },
   created() {

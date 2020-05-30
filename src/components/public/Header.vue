@@ -45,7 +45,9 @@ export default {
             alert("搜索失败");
           }
         })
-        .catch(err => {});
+        .catch(err => {
+            alert("搜索失败");
+        });
     }
   }
 };
