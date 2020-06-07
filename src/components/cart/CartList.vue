@@ -1,22 +1,28 @@
-<template>
+<template >
   <div>
     <CrumbList title="我的购物车"></CrumbList>
-
+    <template>
       <List>
-            <input type="checkbox" id="all" slot="checkboxAll"/>
-              <input type="checkbox" id="all"  slot="All"/>
-            <label for="all" slot="quanxuan">全选</label>
+        <template v-slot:bb>
+          <router-link to="/cart/ordernotarize" href="javascript:;">去结算</router-link>
+        </template>
       </List>
+    </template>
   </div>
 </template>
 
 <script>
 import CrumbList from "../public/CrumbList";
-import List from './List'
+import List from "@/components/public/List.vue";
+
 export default {
-  components:{
+  components: {
     List,
     CrumbList
-  }
-}
+  },
+  data() {
+    return {};
+  },
+  methods: {}
+};
 </script>

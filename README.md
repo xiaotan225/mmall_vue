@@ -1,29 +1,24 @@
-# mmall_vue
+# 介绍
 
-## Project setup
+## 购物商场vue版
+
 ```
+使用技术栈：Html+Scss+JavaScript+Vue2.0+Vuex+Axios+Webpack
+```
+
+### 如何使用
+
+#### 程序启动
+
+```
+git clone https://github.com/xiaotan225/mmall_vue.git
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+#### 打包
+
+~~~
 npm run build
-```
+~~~
 
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

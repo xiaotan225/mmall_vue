@@ -9,37 +9,65 @@
       </div>
       <div class="body">
         <ul>
-          <li  v-for="(item, index) in list" :key="index" :class="item.pitch?'pitch':''">
+          <li
+            v-for="(item, index) in list"
+            :key="index"
+            :class="item.checked?'pitch':''"
+            @click="setSite(item._id)"
+          >
             <p class="top">
-              <span>北京</span>&nbsp;
-              <span>北京</span>&nbsp;
-              <span>(Rosen 收)</span>
+              <span>{{item.value}}</span>&nbsp;
+              <span>({{item.name}}&nbsp;收)</span>
             </p>
-            <p class="bottom">{{item.ddas}}&nbsp;<span>{{item.tel}}</span></p>
+            <p class="bottom">
+              {{item.detailSite}}&nbsp;
+              <span>{{item.mobile}}</span>
+            </p>
+            <p class="del" @click="del(item)">删除</p>
           </li>
-         
-         
-         
-         
-            <li class="add-site" @click="showAddSite">
-              <p class="add-icon">+</p>
-              <p>使用新地址</p>
-            </li>
-        
+
+          <li class="add-site" @click="showAddSite">
+            <p class="add-icon">+</p>
+            <p>使用新地址</p>
+          </li>
         </ul>
       </div>
     </div>
     <div class="inventory w">
       <h3>商品清单</h3>
     </div>
-    <List :isShowDel="isShowDel" ></List>
+    <List :isShowDel="isShowDel">
+      <template v-slot:aa="{list}">
+        <div v-for="(item, index) in list" :key="index">
+          <ul v-if="item.isOpt">
+            <li></li>
+            <li>
+              <a href="javascript:;" class="info">
+                <img v-lazy="item.imgSrc" alt />
+                <span>{{item.title}}</span>
+              </a>
+            </li>
+            <li>
+              <em>{{item.price}}</em>
+            </li>
+            <li>{{item.count}}x</li>
+            <li :class="isShowDel?'rt':''">
+              <em>{{item.price * item.count}}</em>
+            </li>
+          </ul>
+        </div>
+      </template>
+      <template v-slot:bb>
+        <a href="javascript:;" @click="addOrder">确认订单</a>
+      </template>
+    </List>
   </div>
 </template>
 
 <script>
 import CrumbList from "../public/CrumbList";
-import AddSite from './AddSite'
-import List from "./List";
+import AddSite from "./AddSite";
+import List from "@/components/public/List.vue";
 export default {
   components: {
     List,
@@ -50,39 +78,152 @@ export default {
     return {
       isShowDel: true,
       isShowTitle: false,
-      isShowAddSite:false,
-      list:[
-        {
-          ddas:'中关村',
-          tel:'15506624783',
-          pitch:false 
-        },
-          {
-          ddas:'中关村',
-          tel:'15506624783',
-          pitch:true
-        },
-          {
-          ddas:'小吃',
-          tel:'15522624783',
-          pitch:false
-        }
-      ]
+      isShowAddSite: false,
+      checked: "",
+      list: [],
+      goodsData: [],
+      siteData: {}
     };
   },
   methods: {
-    showAddSite(){
-      this.isShowAddSite = true
+    /* 删除地址 */
+    del(item) {
+      var userName = localStorage.getItem("userName");
+      this.$axios
+        .post("/site/del", {
+          id: item._id,
+          userName: userName
+        })
+        .then(res => {
+          var code = res.data.code;
+          if (code === 1) {
+            alert("删除成功");
+          }
+        })
+        .catch(err => {
+          alert("删除地址失败");
+        });
     },
-    close(data){
-      this.isShowAddSite = data
+    /* 添加订单 */
+    addOrder() {
+      if (this.list.length == 0) {
+        alert("地址不能为空");
+        return;
+      }
+      if (this.goodsData.length == 0) {
+        alert("商品不能为空");
+        return;
+      }
+      this.list.forEach(item => {
+        if (item.checked) {
+          this.siteData = item;
+        }
+      });
+      var userName = localStorage.getItem("userName");
+      this.$axios
+        .post("/cart/addOrder", {
+          userName: userName,
+          goodsData: this.goodsData,
+          siteData: this.siteData,
+          total: window.total
+        })
+        .then(res => {
+          var code = res.data.code;
+
+          if (code === 1) {
+            this.$router.push("/successOrder");
+          } else if (code == -2) {
+            alert("请选择地址");
+          } else {
+            alert("订单添加失败");
+          }
+        });
+    },
+    showAddSite() {
+      this.isShowAddSite = true;
+    },
+    close(data) {
+      this.isShowAddSite = data;
+      this.getSiteList();
+    },
+    /* 获取地址列表 */
+    getSiteList() {
+      var userName = localStorage.getItem("userName");
+      this.$axios
+        .get("/site/getSiteList", {
+          params: {
+            userName: userName
+          }
+        })
+        .then(result => {
+          var code = result.data.code;
+          if (code === 1) {
+            this.list = result.data.result;
+          } else {
+            alert("获取地址列表失败");
+          }
+        })
+        .catch(err => {});
+    },
+    /* 设置用户地址状态 */
+    setSite(id) {
+      var userName = localStorage.getItem("userName");
+      this.$axios
+        .post("/site/setSite", {
+          userName: userName,
+          id: id
+        })
+        .then(res => {
+          var code = res.data.code;
+          if (code == 1) {
+            this.getSiteList();
+          } else {
+            alert("地址信息设置失败");
+          }
+        });
+    },
+    /* 获取购物车 */
+    getCartData() {
+      var userName = localStorage.getItem("userName");
+      this.$axios
+        .get("/cart/cartData", {
+          params: {
+            userName: userName
+          }
+        })
+        .then(result => {
+          var code = result.data.code;
+          if (code === 1) {
+            let goodsList = result.data.result;
+            for (let i = 0; i < goodsList.length; i++) {
+              if (goodsList[i].isOpt) {
+                this.goodsData.push(goodsList[i]);
+              }
+            }
+          } else {
+            alert("获取购物车数据失败");
+          }
+        })
+        .catch(err => {
+          alert("获取购物车数据失败");
+        });
     }
+  },
+  created() {
+    this.getSiteList();
+    this.getCartData();
   }
 };
 </script>
 
 <style lang="css" scoped>
+.del {
+  text-align: right;
+  cursor: pointer;
+}
 
+.guanbi-icon {
+}
 .site-list .add-site {
   font-size: 20px;
   color: #ccc;
@@ -93,7 +234,7 @@ export default {
 .site-list .add-site p {
   padding: 0 !important;
   margin: 0;
-  border:0 !important; 
+  border: 0 !important;
 }
 .site-list .add-site .add-icon {
   font-size: 55px;
@@ -110,29 +251,31 @@ export default {
   margin-bottom: 20px;
 }
 .site-list .body ul {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-margin-left: 40px;
+  margin-left: 40px;
 }
 .site-list .body ul li p + p {
   border-top: 1px solid #ccc;
   padding: 10px 0;
 }
-.site-list .body ul li:hover{
-    border: 1px dashed #c60023 !important; 
+.site-list .body ul li::after {
+}
+.site-list .body ul li:hover {
+  border: 1px dashed #c60023 !important;
 }
 .site-list .body ul li,
 .site-list .add-site {
-      padding: 0 10px;
-    width: 300px;
-    height: 130px;
-    margin-bottom: 10px;
+  padding: 0 10px;
+  width: 300px;
+  height: 130px;
+  margin-bottom: 10px;
   border: 1px dashed #ccc;
-      margin-right: 20px;
+  margin-right: 20px;
 }
 
-.pitch{
-  border: 1px dashed #c60023 !important; 
-
+.pitch {
+  border: 1px dashed #c60023 !important;
 }
 </style>
